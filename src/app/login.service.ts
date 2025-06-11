@@ -7,7 +7,7 @@ import { FirebaseService } from './firebase.service';
   providedIn: 'root'
 })
 export class LoginService {
-  token: string = '';
+  token: string | null = null;
 
   constructor(
     private router: Router,
@@ -32,4 +32,26 @@ export class LoginService {
   getIdToken() {
     return this.token;
   }
+
+  //Verifica si el usuario está autenticado
+
+  isAutenticado(){
+    return this.token != null
+  }
+
+  // Cierra la sesión del usuario
+  logout() {
+    const auth = this.firebaseService.auth;
+    auth.signOut()
+      .then(() => {
+        this.token = null;
+        this.router.navigate(['/login']);
+      })
+      .catch((error) => {
+        console.error('Error during logout:', error);
+        alert('Logout failed. Please try again.');
+      }
+    );
 }
+
+  }
